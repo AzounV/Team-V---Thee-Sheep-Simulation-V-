@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Team-V---Thee-Sheep-Simulation-V-
 
 Evolution Simulation
@@ -33,5 +34,6 @@ Color,
 Class Position 
 Int x
 int y
+
 
 
