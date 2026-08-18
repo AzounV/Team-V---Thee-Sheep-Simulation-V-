@@ -1,22 +1,24 @@
 import java.awt.*;
-public abstract class Entity extends Panel {
+public abstract class Entity {
     public Position pos;
 
     public double nutrition = 0.3; //How much this entity fills a creatures hunger when eaten
 
+    public Entity() {
+    }
 
     public void KillEntity()
     {
         //Death logic
     }
 
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(Color.green);
-        g.fillRect(pos.getX(), pos.getY(), 10, 10);
+    public void drawEntity(Graphics g) {
+        g.setColor(Color.white);
+        g.fillRect(pos.getX(), pos.getY(), 40,40);
     }
 
-    public void drawEntity() {
-        repaint();
+    @Override
+    public String toString() {
+        return this.getClass().getName() + " " + pos;
     }
 }

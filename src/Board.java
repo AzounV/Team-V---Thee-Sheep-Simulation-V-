@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.Timer;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Board extends Frame implements ActionListener {
     private int bWidth; // Board width
     private int bHeight; // Board height
     private Timer timer;
+    private List<Entity> entities;
 
     public Board(int bWidth, int bHeight) {
         this.bWidth = bWidth;
@@ -22,24 +24,28 @@ public class Board extends Frame implements ActionListener {
         setLocationRelativeTo(null);
         setLayout(null);
         setBackground(Color.BLACK);
+
+        entities = new ArrayList<>();
+        entities.add(new Wolf());
+        entities.add(new Sheep("Mary", 10, 3, 5, new Animal[]{null, null}));
+        for (Entity ent : entities) {
+            ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40);
+            System.out.println(ent);
+        }
+
         timer = new Timer(10, this);
         timer.start();
     }
-
-    private int c = 0;
-    private boolean reverse = false;
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        for (Entity ent : entities) {
+            ent.drawEntity(g);
+        }
+    }
     @Override
     // After the timer finishes do this
     public void actionPerformed(ActionEvent e) {
-        if (!reverse) {
-            c++;
-        }
-        else { 
-            c--;
-        }
-        if (c >= 255 || c <= 0) {
-            reverse = !reverse;
-        }
-        setBackground(new Color(c, c, c));
+        repaint();
     }
 }
