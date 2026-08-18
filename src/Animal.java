@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.util.ArrayList;
+
 
 public abstract class Animal extends Entity{
 
@@ -20,7 +22,7 @@ public abstract class Animal extends Entity{
 
     protected static double hungerToReproduce = 0.75; //Will look for a mate if hunger above this level;
 
-    private List<Animal> children = new List<Animal>();
+    private ArrayList<Animal> children = new ArrayList<Animal>();
     private Animal[] parents = new Animal[2];
     
 
@@ -39,13 +41,18 @@ public abstract class Animal extends Entity{
         this.parents = parents;
     }
 
-    @Override
+    public void Move()
+    {
+
+    }
+
+    
     public void LookForFood()
     {
 
     }
 
-    @Override
+    
     public void EatFood(Entity entity)
     {
         hunger += entity.nutrition;
