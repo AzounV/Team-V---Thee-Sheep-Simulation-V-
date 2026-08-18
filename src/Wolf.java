@@ -8,7 +8,7 @@ public class Wolf extends Animal {
 
     @Override
     public void Move() {
-        
+
     }
 
     @Override
@@ -16,7 +16,7 @@ public class Wolf extends Animal {
         
     }
 
-    /*
+    
     public void EatSheep(Entity entity) {
         if (entity instanceof Sheep) {
             EatFood(entity);
@@ -27,9 +27,10 @@ public class Wolf extends Animal {
     public void Reproduce() {
         
     }
-
+/*
     public void Die() {
         KillEntity();
     }
-    */
+*/
+
 }
