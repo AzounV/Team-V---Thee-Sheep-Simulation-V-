@@ -28,6 +28,15 @@ public class Position {
         return Math.sqrt(xDist * xDist + yDist * yDist);
     }
 
+    public Position dir(Position target)
+    {
+        //returns vector2 showing how many tiles vertically and horizontally the object is from the target
+        
+        int xCount = target.getX() - this.x;
+        int yCount = target.getY() - this.y;
+        return new Position(xCount, yCount);
+    }
+
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
