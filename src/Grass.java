@@ -7,7 +7,4 @@ public class Grass extends Plant{
         super("Grass", Color.green);
         this.nutrition = 0.6f;
     }
-
-    
-
 }

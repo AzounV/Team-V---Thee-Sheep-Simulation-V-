@@ -28,6 +28,7 @@ public class Board extends Frame implements ActionListener {
         entities = new ArrayList<>();
         entities.add(new Wolf());
         entities.add(new Sheep("Mary", 10, 3, 5, new Animal[]{null, null}));
+        entities.add(new Grass());
         entities.add(new Flower());
         for (Entity ent : entities) {
             ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40);

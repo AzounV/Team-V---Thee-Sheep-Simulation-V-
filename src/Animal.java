@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 
@@ -66,5 +67,11 @@ public abstract class Animal extends Entity{
     public void Reproduce() 
     {
         
+    }
+
+    @Override
+    public void drawEntity(Graphics g) {
+        g.setColor(colour);
+        g.fillRect(pos.getX(), pos.getY(), 40,40);
     }
 }
