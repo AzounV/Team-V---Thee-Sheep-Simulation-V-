@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public class Sheep extends Animal{
 
-
+    Flower targetFlower = null;
 
     public Sheep(String name, float speed, float perception, int lifeSpan, Animal[] parents)
     {
@@ -9,37 +9,28 @@ public class Sheep extends Animal{
     }   
 
     @Override
-    public void LookForFood()
+    public Entity LookForFood()
     {
         //tempo just to allow for logic development. Replace with proper entity database at some point
-        ArrayList<Entity> allFlowers = new ArrayList<Entity>();
+        ArrayList<Flower> allFlowers = new ArrayList<Flower>();
 
-        Entity closest = null;
+        Flower closest = null;
         double closestDist = 99999;
-        for (Entity entity : allFlowers) {
+        for (Flower flower : allFlowers) {
 
-            double dist = this.pos.dist(entity.pos) ;
+            double dist = this.pos.dist(flower.pos) ;
             if(dist < this.perception && dist < closestDist)
             {
-                closest = entity;
+                closest = flower;
                 closestDist = dist;
             }
         }
         
-        if(closest != null)
-        {
-            //Move to flower
-        }else{
-            //roam randomly 
-        }
+        return closest;
 
 
         
     }
 
-    @Override
-    public void Move()
-    {
 
-    }
 }
