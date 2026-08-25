@@ -25,6 +25,10 @@ public abstract class Animal extends Entity{
 
     private ArrayList<Animal> children = new ArrayList<Animal>();
     private Animal[] parents = new Animal[2];
+
+    private Entity targetEntity = null;
+
+  
     
 
 
@@ -42,15 +46,44 @@ public abstract class Animal extends Entity{
         this.parents = parents;
     }
 
-    public void Move()
+    //Moves animal towards destination, returns true if it is at the destination already with buffer.
+    public boolean Move(Position destination)
     {
-
+        int buffer = 5;
+        Position direction = pos.dir(destination);
+        if(Math.abs(direction.getX()) <= buffer && Math.abs(direction.getY()) == buffer){return true;}
+        if(Math.abs(direction.getX()) > Math.abs(direction.getY()))
+        {
+            pos.setX((int)(pos.getX() + speed* Math.signum(direction.getX())));
+        }else{
+            pos.setY((int)(pos.getY() + speed* Math.signum(direction.getY())));
+        }
+        return false;
     }
 
-    
-    public void LookForFood()
-    {
 
+    public void AnimalBehaviour()
+    {
+        this.targetEntity = LookForFood();
+        if(targetEntity != null)
+        {
+            if(Move(targetEntity.pos))
+            {
+                EatFood(targetEntity);
+            }
+        }else{
+            //Roam Randomly
+            //Thinking about whether or not it should walk to a randomly selected point, or each frame just choose a different direction. OptionA would be prefered. 
+        }
+
+        
+        
+        
+    }
+    
+    public Entity LookForFood()
+    {
+        return null;
     }
 
     
