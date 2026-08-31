@@ -8,7 +8,7 @@ public class Board extends Frame implements ActionListener {
     private int bWidth; // Board width
     private int bHeight; // Board height
     private Timer timer;
-    private List<List<Entity>> entities;
+    public static List<List<Entity>> entities;
 
     public Board(int bWidth, int bHeight) {
         this.bWidth = bWidth;
@@ -30,8 +30,12 @@ public class Board extends Frame implements ActionListener {
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
-        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 10, 3, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 1000, 5, new Animal[]{null, null}));
         entities.get(Ent.wolf.get()).add(new Wolf());
+        for(int i =0; i < 20; i ++)
+        {
+            entities.get(Ent.flower.get()).add(new Flower());
+        }
         entities.get(Ent.flower.get()).add(new Flower());
         entities.get(Ent.grass.get()).add(new Grass());
         for (List<Entity> list : entities) {
@@ -50,6 +54,11 @@ public class Board extends Frame implements ActionListener {
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
                 ent.drawEntity(g);
+                if(ent instanceof Animal)
+                {
+                    Animal animal = (Animal)ent;
+                    animal.AnimalBehaviour();
+                }
             }
         }
     }

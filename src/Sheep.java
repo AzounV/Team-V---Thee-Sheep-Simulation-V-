@@ -7,6 +7,8 @@ public class Sheep extends Animal{
     public Sheep(String name, float speed, float perception, int lifeSpan, Animal[] parents)
     {
         super(name, speed, perception, lifeSpan, parents);
+        entityType = Board.Ent.sheep;
+
     }   
 
     @Override
