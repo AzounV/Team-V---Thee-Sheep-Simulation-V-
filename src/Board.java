@@ -12,7 +12,7 @@ public class Board extends Frame implements ActionListener {
 
     public Board(int bWidth, int bHeight) {
         this.bWidth = bWidth;
-        this.bHeight = bHeight;
+        this.bHeight = bHeight + 25;
         
         init();
     }
@@ -23,6 +23,7 @@ public class Board extends Frame implements ActionListener {
         setTitle("Sheep Simulation");
         setLocationRelativeTo(null);
         setLayout(null);
+        setResizable(false);
         setBackground(Color.BLACK);
 
         entities = new ArrayList<>();
@@ -40,7 +41,7 @@ public class Board extends Frame implements ActionListener {
         entities.get(Ent.grass.get()).add(new Grass());
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
-                ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40);
+                ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 25);
                 System.out.println(ent);
             }
         }
@@ -58,14 +59,31 @@ public class Board extends Frame implements ActionListener {
                 {
                     Animal animal = (Animal)ent;
                     animal.AnimalBehaviour();
+                    if (tic % 100 == 0) {
+                        System.out.println(animal + " Hunger " + animal.hunger);
+                    }
                 }
             }
         }
+        drawGrid(g);
     }
+
+    private void drawGrid(Graphics g) {
+        g.setColor(Color.white);
+        for (int i = 40; i < bWidth; i += 40) {
+            g.drawLine(i, 0, i, bHeight);
+        }
+        for (int i = 65; i < bHeight; i += 40) {
+            g.drawLine(0, i, bWidth, i);
+        }
+    }
+
+    private int tic = 1;
     @Override
     // After the timer finishes do this
     public void actionPerformed(ActionEvent e) {
         repaint();
+        tic++;
     }
 
     public enum Ent {
