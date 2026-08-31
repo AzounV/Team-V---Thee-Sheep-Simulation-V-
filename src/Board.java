@@ -12,14 +12,14 @@ public class Board extends Frame implements ActionListener {
 
     public Board(int bWidth, int bHeight) {
         this.bWidth = bWidth;
-        this.bHeight = bHeight + 25;
+        this.bHeight = bHeight;
         
         init();
     }
 
     //Initialise the board
     private void init() {
-        setSize(bWidth, bHeight);
+        setSize(bWidth, bHeight + 100);
         setTitle("Sheep Simulation");
         setLocationRelativeTo(null);
         setLayout(null);
@@ -41,7 +41,7 @@ public class Board extends Frame implements ActionListener {
         entities.get(Ent.grass.get()).add(new Grass());
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
-                ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 25);
+                ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 100);
                 System.out.println(ent);
             }
         }
@@ -52,6 +52,8 @@ public class Board extends Frame implements ActionListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        g.setColor(Color.gray);
+        g.fillRect(0, 0, bWidth, 100);
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
                 ent.drawEntity(g);
@@ -66,22 +68,46 @@ public class Board extends Frame implements ActionListener {
             }
         }
         drawGrid(g);
+        drawCounts(g);
     }
 
     private void drawGrid(Graphics g) {
         g.setColor(Color.white);
         for (int i = 40; i < bWidth; i += 40) {
-            g.drawLine(i, 0, i, bHeight);
+            g.drawLine(i, 100, i, bHeight + 100);
         }
-        for (int i = 65; i < bHeight; i += 40) {
+        for (int i = 100; i < bHeight + 100; i += 40) {
             g.drawLine(0, i, bWidth, i);
         }
     }
 
+    Font medium = new Font("Helvetica", Font.PLAIN, 16);
+    private void drawCounts(Graphics g) {
+        g.setFont(medium);
+        FontMetrics metrics = g.getFontMetrics();
+        int yPos =  15 + ((100 - metrics.getHeight()) / 2) + metrics.getAscent();
+        int nextX = bWidth / 16;
+        g.drawString("Sheep: " + entities.get(Ent.sheep.get()).size(), nextX, yPos);
+        nextX += bWidth / 4;
+        g.drawString("Wolves: " + entities.get(Ent.wolf.get()).size(), nextX, yPos);
+        nextX += bWidth / 4;
+        g.drawString("Flowers: " + entities.get(Ent.flower.get()).size(), nextX, yPos);
+        nextX += bWidth / 4;
+        g.drawString("Grass: " + entities.get(Ent.grass.get()).size(), nextX, yPos);
+    }
+
     private int tic = 1;
+    private int nextSpawn = 300;
     @Override
     // After the timer finishes do this
     public void actionPerformed(ActionEvent e) {
+        if (tic >= nextSpawn) {
+            Flower newFlower = new Flower();
+            newFlower.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 100);
+            entities.get(Ent.flower.get()).add(newFlower);
+            System.out.println("New flower added: " + newFlower);
+            nextSpawn = tic + (int)(Math.random() * 300 + 200);
+        }
         repaint();
         tic++;
     }
