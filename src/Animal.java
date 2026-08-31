@@ -9,7 +9,7 @@ public abstract class Animal extends Entity{
 
     public String name = "Background Character";
 
-    public double hunger = 1.0; //Range from 1.0 (Creature full), (0.0) Creature dies)
+    public double hunger = 0.5; //Range from 1.0 (Creature full), (0.0) Creature dies)
 
     public double speed = 1.0; //Tiles moved
 
@@ -64,7 +64,18 @@ public abstract class Animal extends Entity{
 
     public void AnimalBehaviour()
     {
-        this.targetEntity = LookForFood();
+        hunger -= 0.001;
+        if(hunger < hungerToReproduce && targetEntity == null)
+        {
+            this.targetEntity = LookForFood();
+            
+        }
+        if(hunger < 0)
+        {
+            hunger = 0;
+        }
+        System.out.println("Hunger " + hunger);
+        
         if(targetEntity != null)
         {
             if(Move(targetEntity.pos))
@@ -83,17 +94,23 @@ public abstract class Animal extends Entity{
     
     public Entity LookForFood()
     {
+        //System.out.println("This is the base look for food function, should not be called");
         return null;
     }
 
     
     public void EatFood(Entity entity)
     {
+       
         hunger += entity.nutrition;
+        
         if(hunger > 1.0)
         {
             hunger = 1.0;
         }
+        System.out.println("Creature eaten worth "+ entity.nutrition + " nutrition. Total hunger now: " + hunger);
+        entity.KillEntity();
+        targetEntity = null;
 
     }
 

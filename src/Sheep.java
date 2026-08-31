@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 public class Sheep extends Animal{
 
     Flower targetFlower = null;
@@ -12,11 +13,12 @@ public class Sheep extends Animal{
     public Entity LookForFood()
     {
         //tempo just to allow for logic development. Replace with proper entity database at some point
-        ArrayList<Flower> allFlowers = new ArrayList<Flower>();
+        List<Entity> allFlowers = Board.entities.get(Board.Ent.flower.get());
+    
 
-        Flower closest = null;
+        Entity closest = null;
         double closestDist = 99999;
-        for (Flower flower : allFlowers) {
+        for (Entity flower : allFlowers) {
 
             double dist = this.pos.dist(flower.pos) ;
             if(dist < this.perception && dist < closestDist)
@@ -25,7 +27,12 @@ public class Sheep extends Animal{
                 closestDist = dist;
             }
         }
-        
+        if(closest != null)
+        {
+            //System.out.println("Closest flower @ " + closest.pos);
+        }else{
+            //System.out.println("No flowers in range");
+        }
         return closest;
 
 
