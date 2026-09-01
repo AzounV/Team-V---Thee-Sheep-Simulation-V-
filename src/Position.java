@@ -7,6 +7,12 @@ public class Position {
         this.y = y;
     }
 
+    public static Position genRand (int width, int height, int bufferX, int bufferY, int boxSize) {
+        int x = (int)(Math.random() * (width / boxSize)) * boxSize + bufferX;
+        int y = (int)(Math.random() * (height / boxSize)) * boxSize + bufferY;
+        return new Position(x, y);
+    }
+
     public int getX() {
         return x;
     }

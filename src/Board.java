@@ -41,7 +41,7 @@ public class Board extends Frame implements ActionListener {
         entities.get(Ent.grass.get()).add(new Grass());
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
-                ent.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 100);
+                ent.pos = Position.genRand(bWidth, bHeight, 0, 100, 40);
                 System.out.println(ent);
             }
         }
@@ -103,7 +103,7 @@ public class Board extends Frame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (tic >= nextSpawn) {
             Flower newFlower = new Flower();
-            newFlower.pos = new Position((int)(Math.random() * (bWidth / 40)) * 40, (int)(Math.random() * (bHeight / 40)) * 40 + 100);
+            newFlower.pos = Position.genRand(bWidth, bHeight, 0, 100, 40);
             entities.get(Ent.flower.get()).add(newFlower);
             System.out.println("New flower added: " + newFlower);
             nextSpawn = tic + (int)(Math.random() * 300 + 200);
