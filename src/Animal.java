@@ -28,7 +28,7 @@ public abstract class Animal extends Entity{
 
     private Entity targetEntity = null;
 
-  
+    public Position randPos;
     
 
 
@@ -44,24 +44,25 @@ public abstract class Animal extends Entity{
         this.perception = perception;
         this.lifeSpan = lifeSpan;
         this.parents = parents;
+        this.randPos = Position.genRand(Board.bWidth, Board.bHeight, 0, 100, 40);
     }
 
     //Moves animal towards destination, returns true if it is at the destination already with buffer.
     public boolean Move(Position destination)
     {
-        int buffer = 5;
+        int buffer = 0;
         Position direction = pos.dir(destination);
-        if(Math.abs(direction.getX()) <= buffer && Math.abs(direction.getY()) == buffer){return true;}
+        if(Math.abs(direction.getX()) <= buffer && Math.abs(direction.getY()) <= buffer){return true;}
         if(Math.abs(direction.getX()) > Math.abs(direction.getY()))
         {
-            pos.setX((int)(pos.getX() + speed* Math.signum(direction.getX())));
+            pos.setX((int)(pos.getX() + speed * Math.signum(direction.getX())));
         }else{
-            pos.setY((int)(pos.getY() + speed* Math.signum(direction.getY())));
+            pos.setY((int)(pos.getY() + speed * Math.signum(direction.getY())));
         }
         return false;
     }
 
-
+    int wait = 0;
     public void AnimalBehaviour()
     {
         hunger -= 0.001;
@@ -74,15 +75,25 @@ public abstract class Animal extends Entity{
         {
             hunger = 0;
         }
-        System.out.println("Hunger " + hunger);
+        //System.out.println("Hunger " + hunger);
         
         if(targetEntity != null)
-        {
+        {   
             if(Move(targetEntity.pos))
             {
                 EatFood(targetEntity);
             }
         }else{
+            
+            boolean moved = Move(randPos);
+            if (moved && (wait == 0 || hunger < 0.25))
+            {   
+                wait = 100;
+                randPos = Position.genRand(Board.bWidth, Board.bHeight, 0, 100, 40);
+            }
+            else if (moved) {
+                wait--;
+            }
             //Roam Randomly
             //Thinking about whether or not it should walk to a randomly selected point, or each frame just choose a different direction. OptionA would be prefered. 
         }
