@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
-public class Main extends Frame{
+import javax.swing.*;
+public class Main extends JFrame{
     public Main() {
         init();
     }
@@ -15,10 +16,10 @@ public class Main extends Frame{
                 System.exit(0);
             }
         });
-        setVisible(true);
     }
     public static void main(String [] args) {
         Frame main = new Main();
+        main.setVisible(true);
         System.out.println("Hello, world! but sheep");
     }
 }

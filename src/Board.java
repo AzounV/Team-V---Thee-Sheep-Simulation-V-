@@ -2,11 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.Timer;
 
-public class Board extends Panel implements ActionListener {
+import javax.swing.*;
+
+public class Board extends JPanel implements ActionListener {
     public static int bWidth; // Board width
     public static int bHeight; // Board height
+    private int tic; // Simulation tic
     private Timer timer;
     public static List<List<Entity>> entities;
 
@@ -19,10 +21,16 @@ public class Board extends Panel implements ActionListener {
 
     //Initialise the board
     private void init() {
-
+        addKeyListener(new KeyInput());
         setLayout(null);
         setBackground(Color.BLACK);
+        setFocusable(true);
         setPreferredSize(new Dimension(bWidth, bHeight + 100));
+
+        resetSimulation();
+    }
+
+    private void resetSimulation() {
 
         entities = new ArrayList<>();
         entities.add(new ArrayList<>());
@@ -44,12 +52,15 @@ public class Board extends Panel implements ActionListener {
             }
         }
 
+        tic = 1;
+
         timer = new Timer(10, this);
         timer.start();
     }
+
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.setColor(Color.gray);
         g.fillRect(0, 0, bWidth, 100);
         for (List<Entity> list : entities) {
@@ -86,6 +97,7 @@ public class Board extends Panel implements ActionListener {
         int yPos =  ((100 - metrics.getHeight()) / 2) + metrics.getAscent();
         int nextX = bWidth / 16;
         g.drawString("Sheep: " + entities.get(Ent.sheep.get()).size(), nextX, yPos);
+        g.drawString("tic: " + tic, nextX, yPos * 2);
         nextX += bWidth / 4;
         g.drawString("Wolves: " + entities.get(Ent.wolf.get()).size(), nextX, yPos);
         nextX += bWidth / 4;
@@ -93,8 +105,6 @@ public class Board extends Panel implements ActionListener {
         nextX += bWidth / 4;
         g.drawString("Grass: " + entities.get(Ent.grass.get()).size(), nextX, yPos);
     }
-
-    private int tic = 1;
     private int nextSpawn = 300;
     @Override
     // After the timer finishes do this
@@ -103,7 +113,6 @@ public class Board extends Panel implements ActionListener {
             Flower newFlower = new Flower();
             newFlower.pos = Position.genRand(bWidth, bHeight, 0, 100, 40);
             entities.get(Ent.flower.get()).add(newFlower);
-            System.out.println("New flower added: " + newFlower);
             nextSpawn = tic + (int)(Math.random() * 300 + 200);
         }
         repaint();
@@ -121,6 +130,18 @@ public class Board extends Panel implements ActionListener {
 
         public int get() {
             return index;
+        }
+    }
+
+    private class KeyInput extends KeyAdapter {
+        @Override 
+        public void keyPressed(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+            if (keyCode == KeyEvent.VK_R) {
+                entities.clear();
+                timer.stop();
+                resetSimulation();
+            }
         }
     }
 }
