@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-public class Board extends Frame implements ActionListener {
+public class Board extends Panel implements ActionListener {
     public static int bWidth; // Board width
     public static int bHeight; // Board height
     private Timer timer;
@@ -19,12 +19,10 @@ public class Board extends Frame implements ActionListener {
 
     //Initialise the board
     private void init() {
-        setSize(bWidth, bHeight + 100);
-        setTitle("Sheep Simulation");
-        setLocationRelativeTo(null);
+
         setLayout(null);
-        setResizable(false);
         setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(bWidth, bHeight + 100));
 
         entities = new ArrayList<>();
         entities.add(new ArrayList<>());
@@ -85,7 +83,7 @@ public class Board extends Frame implements ActionListener {
     private void drawCounts(Graphics g) {
         g.setFont(medium);
         FontMetrics metrics = g.getFontMetrics();
-        int yPos =  15 + ((100 - metrics.getHeight()) / 2) + metrics.getAscent();
+        int yPos =  ((100 - metrics.getHeight()) / 2) + metrics.getAscent();
         int nextX = bWidth / 16;
         g.drawString("Sheep: " + entities.get(Ent.sheep.get()).size(), nextX, yPos);
         nextX += bWidth / 4;
