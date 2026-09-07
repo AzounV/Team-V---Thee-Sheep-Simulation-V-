@@ -5,14 +5,14 @@ import java.util.List;
 import javax.swing.Timer;
 
 public class Board extends Frame implements ActionListener {
-    private int bWidth; // Board width
-    private int bHeight; // Board height
+    public static int bWidth; // Board width
+    public static int bHeight; // Board height
     private Timer timer;
     public static List<List<Entity>> entities;
 
     public Board(int bWidth, int bHeight) {
-        this.bWidth = bWidth;
-        this.bHeight = bHeight;
+        Board.bWidth = bWidth;
+        Board.bHeight = bHeight;
         
         init();
     }
@@ -31,8 +31,8 @@ public class Board extends Frame implements ActionListener {
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
-        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 1000, 5, new Animal[]{null, null}));
-        entities.get(Ent.wolf.get()).add(new Wolf());
+        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 60, 5, new Animal[]{null, null}));
+        entities.get(Ent.wolf.get()).add(new Wolf("Fido", 1, 120, 5, new Animal[]{null, null}));
         for(int i =0; i < 20; i ++)
         {
             entities.get(Ent.flower.get()).add(new Flower());
