@@ -48,9 +48,8 @@ public abstract class Animal extends Entity{
     }
 
     //Moves animal towards destination, returns true if it is at the destination already with buffer.
-    public boolean Move(Position destination)
+    public boolean Move(Position destination, int buffer)
     {
-        int buffer = 0;
         Position direction = pos.dir(destination);
         if(Math.abs(direction.getX()) <= buffer && Math.abs(direction.getY()) <= buffer){return true;}
         if(Math.abs(direction.getX()) > Math.abs(direction.getY()))
@@ -79,13 +78,17 @@ public abstract class Animal extends Entity{
         
         if(targetEntity != null)
         {   
-            if(Move(targetEntity.pos))
+            if (pos.dist(targetEntity.pos) > perception) {
+                targetEntity = null;
+            }
+            else if(Move(targetEntity.pos, 5))
             {
+                randPos = targetEntity.pos;
                 EatFood(targetEntity);
             }
         }else{
             
-            boolean moved = Move(randPos);
+            boolean moved = Move(randPos, 0);
             if (moved && (wait == 0 || hunger < 0.25))
             {   
                 wait = 100;
