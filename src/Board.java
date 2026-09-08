@@ -38,6 +38,7 @@ public class Board extends JPanel implements ActionListener {
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
         entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 60, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Bob", 1, 60, 5, new Animal[]{null, null}));
         entities.get(Ent.wolf.get()).add(new Wolf("Fido", 1, 120, 5, new Animal[]{null, null}));
         for(int i =0; i < 20; i ++)
         {
@@ -63,6 +64,12 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         g.setColor(Color.gray);
         g.fillRect(0, 0, bWidth, 100);
+        drawEntities(g);
+        drawGrid(g);
+        drawCounts(g);
+    }
+
+    private void drawEntities(Graphics g) {
         for (List<Entity> list : entities) {
             for (Entity ent : list) {
                 ent.drawEntity(g);
@@ -76,8 +83,6 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
-        drawGrid(g);
-        drawCounts(g);
     }
 
     private void drawGrid(Graphics g) {
@@ -97,7 +102,6 @@ public class Board extends JPanel implements ActionListener {
         int yPos =  ((100 - metrics.getHeight()) / 2) + metrics.getAscent();
         int nextX = bWidth / 16;
         g.drawString("Sheep: " + entities.get(Ent.sheep.get()).size(), nextX, yPos);
-        g.drawString("tic: " + tic, nextX, yPos * 2);
         nextX += bWidth / 4;
         g.drawString("Wolves: " + entities.get(Ent.wolf.get()).size(), nextX, yPos);
         nextX += bWidth / 4;
@@ -120,7 +124,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public enum Ent {
-        sheep(0), wolf(1), flower(2), grass(3);
+        sheep(2), wolf(3), flower(1), grass(0);
 
         private final int index;
         
