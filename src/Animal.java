@@ -82,9 +82,8 @@ public abstract class Animal extends Entity{
     }
 
     //Moves animal towards destination, returns true if it is at the destination already with buffer.
-    public boolean Move(Position destination)
+    public boolean Move(Position destination, int buffer)
     {
-        int buffer = 0;
         Position direction = pos.dir(destination);
         if(Math.abs(direction.getX()) <= buffer && Math.abs(direction.getY()) <= buffer){return true;}
         if(Math.abs(direction.getX()) > Math.abs(direction.getY()))
@@ -162,7 +161,7 @@ public abstract class Animal extends Entity{
             state = AnimalState.lookingForFood;
             return;
         }
-        if(Move(targetEntity.pos))
+        if(Move(targetEntity.pos, 10))
         {
             EatFood(targetEntity);
             if(hunger >= hungerToReproduce)
@@ -229,7 +228,7 @@ public abstract class Animal extends Entity{
 
     protected void RoamRandomly()
     {
-        boolean moved = Move(randPos);
+        boolean moved = Move(randPos, 10);
             if (moved && (wait == 0 || hunger < 0.25))
             {   
                 wait = 100;
@@ -252,7 +251,7 @@ public abstract class Animal extends Entity{
             targetEntity = null;
             state = AnimalState.lookingForMate;
         }
-        if(Move(targetEntity.pos))
+        if(Move(targetEntity.pos, 10))
         {
             System.out.println("reproducing");
             Reproduce((Animal)targetEntity);
