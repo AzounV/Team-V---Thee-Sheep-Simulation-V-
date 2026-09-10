@@ -3,15 +3,27 @@ public abstract class Entity {
     public Position pos;
     protected Board.Ent entityType;
 
+    public Board.Ent GetType()
+    {
+        return entityType;
+    }
+
     public double nutrition = 0.3; //How much this entity fills a creatures hunger when eaten
+    private boolean alive = true;
+
+    public boolean IsAlive()
+    {
+        return alive;
+    }
+
+
 
 
 
     public void KillEntity()
     {
         //Death logic
-        
-        Board.entities.get(entityType.get()).remove(this);
+        alive = false;
     }
 
     public void drawEntity(Graphics g) {

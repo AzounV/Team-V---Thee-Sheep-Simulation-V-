@@ -11,6 +11,7 @@ public class Board extends JPanel implements ActionListener {
     private int tic; // Simulation tic
     private Timer timer;
     public static List<List<Entity>> entities;
+    public static List<Animal> babyAnimals;
 
     public Board(int bWidth, int bHeight) {
         Board.bWidth = bWidth;
@@ -32,13 +33,20 @@ public class Board extends JPanel implements ActionListener {
 
     private void resetSimulation() {
 
+        babyAnimals = new ArrayList<>();
         entities = new ArrayList<>();
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
         entities.add(new ArrayList<>());
-        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 60, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Mary", 1, 100, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Franky", 2, 70, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Bert", 1, 100, 5, new Animal[]{null, null}));
+        entities.get(Ent.sheep.get()).add(new Sheep("Henry VII", 2, 70, 5, new Animal[]{null, null}));
+        //entities.get(Ent.sheep.get()).add(new Sheep("Mary3", 1, 60, 5, new Animal[]{null, null}));
+
         entities.get(Ent.wolf.get()).add(new Wolf("Fido", 1, 120, 5, new Animal[]{null, null}));
+        entities.get(Ent.wolf.get()).add(new Wolf("Scar", 1, 120, 5, new Animal[]{null, null}));
         for(int i =0; i < 20; i ++)
         {
             entities.get(Ent.flower.get()).add(new Flower());
@@ -71,13 +79,16 @@ public class Board extends JPanel implements ActionListener {
                     Animal animal = (Animal)ent;
                     animal.AnimalBehaviour();
                     if (tic % 100 == 0) {
-                        System.out.println(animal + " Hunger " + animal.hunger);
+
+                        System.out.println(animal + " " + animal.name + " Hunger " + animal.GetHunger() + "State: " + animal.GetState().toString());
                     }
                 }
             }
         }
         drawGrid(g);
         drawCounts(g);
+
+
     }
 
     private void drawGrid(Graphics g) {
@@ -117,6 +128,34 @@ public class Board extends JPanel implements ActionListener {
         }
         repaint();
         tic++;
+
+        CreateChildren();
+        CleanUp(); 
+    }
+
+    private void CreateChildren()
+    {
+        for(Animal baby : babyAnimals )
+        {
+            entities.get(baby.GetType().get()).add(baby);
+        }
+
+        babyAnimals.clear();
+    }
+
+    private void CleanUp()
+    {
+        
+        for(List<Entity> subList : entities)
+        {
+            for(int i = subList.size() -1; i >= 0; i--)
+            {
+                if(!subList.get(i).IsAlive())
+                {
+                    subList.remove(i);
+                }
+            }
+        }
     }
 
     public enum Ent {

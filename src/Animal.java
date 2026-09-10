@@ -5,11 +5,24 @@ import java.util.ArrayList;
 
 public abstract class Animal extends Entity{
 
- 
+    protected enum AnimalState
+    {
+        lookingForFood, 
+        chasingFood,
+        lookingForMate,
+        chasingMate;
+    }
+
+    private static String[] nameList = {"Mary", "Franky", "Franklin", "Georgie", "Susan", "Laura", "Daisy", "Rose","Cody","Cuddles", "Bill", "Shaun", "Katie", "Brutus", "Scar", "Fido", "Jet", };
 
     public String name = "Background Character";
 
-    public double hunger = 0.5; //Range from 1.0 (Creature full), (0.0) Creature dies)
+    protected double hunger = 0.5; //Range from 1.0 (Creature full), (0.0) Creature dies)
+
+    public double GetHunger()
+    {
+        return hunger;
+    }
 
     public double speed = 1.0; //Tiles moved
 
@@ -29,6 +42,14 @@ public abstract class Animal extends Entity{
     private Entity targetEntity = null;
 
     public Position randPos;
+
+    protected AnimalState state = AnimalState.lookingForFood;
+
+    public AnimalState GetState(){
+        return state;
+    }
+
+
     
 
 
@@ -39,11 +60,24 @@ public abstract class Animal extends Entity{
 
     public Animal(String name, double speed, double perception, int lifeSpan, Animal[] parents)
     {
-        this.name = name;
+        if(name != null)
+        {
+            this.name = name;
+        }else{
+            this.name = nameList[(int)(Math.random() * nameList.length)];
+        }
+        
         this.speed = speed;
         this.perception = perception;
         this.lifeSpan = lifeSpan;
         this.parents = parents;
+        this.pos = new Position(0, 0);
+        this.hunger = 0.6;
+        if(parents[0] != null)
+        {
+            this.pos.setX(parents[0].pos.getX());
+            this.pos.setY(parents[0].pos.getY());
+        }
         this.randPos = Position.genRand(Board.bWidth, Board.bHeight, 0, 100, 40);
     }
 
@@ -65,27 +99,137 @@ public abstract class Animal extends Entity{
     int wait = 0;
     public void AnimalBehaviour()
     {
-        hunger -= 0.001;
-        if(hunger < hungerToReproduce && targetEntity == null)
-        {
-            this.targetEntity = LookForFood();
-            
-        }
+        if(!IsAlive()) return;
+        hunger -= 0.0001;
         if(hunger < 0)
         {
+            System.out.println(name + " Starved");
             hunger = 0;
+            KillEntity();
+            return;
         }
-        //System.out.println("Hunger " + hunger);
         
-        if(targetEntity != null)
-        {   
-            if(Move(targetEntity.pos))
+        switch(state){
+            case AnimalState.lookingForFood:
             {
-                EatFood(targetEntity);
+                LookingForFood();
+                break;
             }
-        }else{
+            case AnimalState.chasingFood:
+            {
+                ChasingFood();
+                break;
+            }case AnimalState.lookingForMate:
+            {
+                LookingForMate();
+                break;
+            }case AnimalState.chasingMate:
+            {
+                ChasingMate();
+                break;
+            }
+
+        }     
+    }
+
+    protected void LookingForFood()
+    {
+        if(targetEntity == null || !targetEntity.IsAlive())
+        {
+            this.targetEntity = LookForFood();
+            if(this.targetEntity != null)
+            {
+                state = AnimalState.chasingFood;
+            }else
+            {
+                RoamRandomly();
             
-            boolean moved = Move(randPos);
+            }
+        
+        }else{
+            targetEntity = null;
+            RoamRandomly();
+        }
+
+    }
+
+    protected void ChasingFood()
+    {
+        //NEED TO FIX THIS AS, WHILST TECHINICALLY IT SHOULD NOT CRASH, SHEEP WILL HUNT INVISIBLE FLOWERS
+        if(targetEntity == null || !targetEntity.IsAlive())
+        {
+           targetEntity = null;
+            state = AnimalState.lookingForFood;
+            return;
+        }
+        if(Move(targetEntity.pos))
+        {
+            EatFood(targetEntity);
+            if(hunger >= hungerToReproduce)
+            {
+                state = AnimalState.lookingForMate;
+                //state = AnimalState.lookingForFood;
+            }else{
+                state = AnimalState.lookingForFood;
+            }
+        }
+    }
+
+    public void AttractMate(Entity ent)
+    {
+        targetEntity = ent;
+        state = AnimalState.chasingMate;
+    }
+    
+    protected void LookingForMate()
+    {
+        Entity closest = null;
+        double closestDist = 99999;        
+        for (Entity ent: Board.entities.get(entityType.get()) )
+        {
+            if(ent == null || ent == this)
+            {
+                continue;
+            }else {
+                Animal a = (Animal)ent;
+                if(a != null && a.GetState() == AnimalState.lookingForMate)
+                {
+                    //other creature is not ready to mate
+                    a.AttractMate(this);
+                    
+                }else{
+                    continue;
+                }
+            }
+            double dist = this.pos.dist(ent.pos) ;
+            if(dist < this.perception*100 && dist < closestDist)
+            {
+                closest = ent;
+                closestDist = dist;
+            }
+        }
+
+
+            
+
+        if(closest != null)
+        {
+            targetEntity = closest;
+            state = AnimalState.chasingMate;
+        }else if(hunger < hungerToReproduce)
+        {
+            System.out.println(name + " is now to hungry for love :(");
+            state = AnimalState.lookingForFood;
+        }else
+        {
+            RoamRandomly();
+        }
+        
+    }
+
+    protected void RoamRandomly()
+    {
+        boolean moved = Move(randPos);
             if (moved && (wait == 0 || hunger < 0.25))
             {   
                 wait = 100;
@@ -94,15 +238,43 @@ public abstract class Animal extends Entity{
             else if (moved) {
                 wait--;
             }
-            //Roam Randomly
-            //Thinking about whether or not it should walk to a randomly selected point, or each frame just choose a different direction. OptionA would be prefered. 
+    }
+    protected void ChasingMate()
+    {
+        if(hunger < hungerToReproduce)
+        {
+            state = AnimalState.lookingForFood;
+            targetEntity = null;
+            return;
         }
+        if(targetEntity == null || !targetEntity.IsAlive())
+        {
+            targetEntity = null;
+            state = AnimalState.lookingForMate;
+        }
+        if(Move(targetEntity.pos))
+        {
+            System.out.println("reproducing");
+            Reproduce((Animal)targetEntity);
+            System.out.println("baby Created");
+            state = AnimalState.lookingForFood;
 
+        }
+    }
+
+    
+    protected void Reproduce(Animal anim)
+    {
+        targetEntity = null;
         
+        hunger = hunger - 0.4f;
+        anim.hunger = anim.hunger - 0.4f;
+        anim.targetEntity = null;
+
+        //temp
         
         
     }
-    
     public Entity LookForFood()
     {
         //System.out.println("This is the base look for food function, should not be called");
@@ -119,12 +291,14 @@ public abstract class Animal extends Entity{
         {
             hunger = 1.0;
         }
-        System.out.println("Creature eaten worth "+ entity.nutrition + " nutrition. Total hunger now: " + hunger);
+        System.out.println("Creature "+ name + " ate entity worth "+ entity.nutrition + " nutrition. Total hunger now: " + hunger);
         entity.KillEntity();
         targetEntity = null;
 
     }
 
+
+    
     public void Reproduce() 
     {
         
@@ -134,5 +308,18 @@ public abstract class Animal extends Entity{
     public void drawEntity(Graphics g) {
         g.setColor(colour);
         g.fillRect(pos.getX(), pos.getY(), 40,40);
+
+        
+
+
+        g.setColor(Color.RED);
+        g.drawString(name.toString(), pos.getX() + 5, pos.getY() + 5);
+        g.setColor(Color.green);
+        double rounded = Math.round(hunger * 100.0) / 100.0;
+
+        g.drawString(Double.toString(rounded), pos.getX() + 5, pos.getY() + 20);
+
+        g.setColor(Color.BLUE);
+        g.drawString(state.toString(), pos.getX() + 5, pos.getY() + 35);
     }
 }

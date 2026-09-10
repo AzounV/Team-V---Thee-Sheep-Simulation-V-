@@ -47,8 +47,11 @@ public class Wolf extends Animal {
         }
     }
     
-    @Override
-    public void Reproduce() {
+@Override 
+    protected void Reproduce(Animal partAnimal)
+    {
+        super.Reproduce(partAnimal);
+       Board.babyAnimals.add(new Wolf(null, 1, 60, 5, new Animal[]{this, partAnimal}));
         
     }
 /*
